@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Fire &amp; Drive — Live Demos</title>
+<meta name="theme-color" content="#14100d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fire &amp; Drive">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#14100d; --panel:#1d1813; --panel-2:#241d16; --line:#352b21;
+    --ink:#f4ece2; --muted:#a9988a; --faint:#7a6b5e;
+    --ember-1:#ffc24b; --ember-2:#ff7a1f; --ember-3:#e8381a; --cool:#8fb3c7;
+    --grad:linear-gradient(100deg,var(--ember-1),var(--ember-2) 55%,var(--ember-3));
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg); color:var(--ink); font-family:"Archivo",sans-serif; line-height:1.45; min-height:100vh;
+    min-height:100dvh; display:flex; flex-direction:column; -webkit-font-smoothing:antialiased;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    background-image:radial-gradient(120% 80% at 80% -10%, rgba(255,122,31,.16), transparent 60%),radial-gradient(90% 70% at -10% 110%, rgba(232,56,26,.12), transparent 55%);}
+  /* full-screen faint Priority Commercial watermark */
+  .wm{position:fixed; inset:0; z-index:0; display:flex; align-items:center; justify-content:center; pointer-events:none; overflow:hidden}
+  .wm img{width:120vw; max-width:1400px; opacity:.05; filter:saturate(0) brightness(1.6)}
+  .wrap{position:relative; z-index:2; flex:1; width:100%; max-width:760px; margin:0 auto; padding:40px 24px 34px;
+    display:flex; flex-direction:column; min-height:100dvh}
+  .top{display:flex; align-items:center; gap:12px; margin-bottom:6px}
+  .spark{width:10px;height:10px;border-radius:50%;background:var(--grad);box-shadow:0 0 16px 3px rgba(255,122,31,.7); flex:none}
+  .kicker{letter-spacing:.18em; font-size:11px; text-transform:uppercase; color:var(--muted); font-weight:700}
+  h1{font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,8vw,56px); line-height:1; letter-spacing:-.015em; margin:18px 0 10px}
+  h1 em{font-style:italic; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .lede{color:var(--muted); font-size:clamp(15px,4vw,17px); max-width:48ch}
+  .lede b{color:var(--ink)}
+
+  .cards{display:flex; flex-direction:column; gap:16px; margin:30px 0 auto}
+  @media(min-width:600px){.cards{flex-direction:row}}
+  a.card{flex:1; text-decoration:none; color:inherit; position:relative; display:flex; flex-direction:column;
+    border:1px solid var(--line); border-radius:20px; padding:24px 22px 22px; overflow:hidden;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel)); transition:transform .18s, border-color .18s, box-shadow .18s;
+    -webkit-tap-highlight-color:transparent; min-height:208px}
+  a.card:active{transform:scale(.985)}
+  a.card:hover{border-color:rgba(255,122,31,.5); box-shadow:0 14px 40px rgba(0,0,0,.4)}
+  a.card::after{content:""; position:absolute; inset:auto -20% -60% auto; width:70%; height:150%;
+    background:radial-gradient(closest-side, rgba(255,122,31,.18), transparent 70%); opacity:0; transition:opacity .25s}
+  a.card:hover::after{opacity:1}
+  .ic{width:48px; height:48px; border-radius:13px; background:var(--grad); display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 18px rgba(255,122,31,.28); margin-bottom:16px; position:relative; z-index:2}
+  .card h2{font-family:"Fraunces",serif; font-weight:600; font-size:23px; margin-bottom:6px; position:relative; z-index:2}
+  .card p{color:var(--muted); font-size:13.5px; line-height:1.5; position:relative; z-index:2; margin-bottom:18px}
+  .go{margin-top:auto; display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:14px;
+    color:var(--ember-1); position:relative; z-index:2}
+  .go svg{transition:transform .2s} a.card:hover .go svg{transform:translateX(4px)}
+  .meta{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:16px; position:relative; z-index:2}
+  .chip{font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:500; color:var(--faint);
+    border:1px solid var(--line); border-radius:999px; padding:4px 9px}
+
+  .foot{margin-top:30px; padding-top:18px; border-top:1px solid var(--line); position:relative; z-index:2}
+  .foot .tip{display:flex; align-items:flex-start; gap:10px; color:var(--muted); font-size:12.5px; line-height:1.5; margin:9px 0}
+  .foot .tip svg{flex:none; margin-top:2px}
+  .foot .tip b{color:var(--ink)}
+  .conf{margin-top:16px; font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--faint); letter-spacing:.04em}
+</style>
+</head>
+<body>
+<div class="wm"><img src="pcn-logo.png" alt=""></div>
+<div class="wrap">
+  <div class="top"><span class="spark"></span><span class="kicker">Priority Commercial Nationwide · Confidential</span></div>
+  <h1>Three Left Turns,<br><em>presented by Fire &amp; Drive</em></h1>
+  <p class="lede">Two live demos, one link. Tap either below — they run fully on this device, no login, no setup. <b>Built for the room.</b></p>
+
+  <div class="cards">
+    <a class="card" href="calculator.html">
+      <div class="ic">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2.5" stroke="#1a130c" stroke-width="1.8"/><path d="M8 7h8M8 11h2M12 11h4M8 15h2M12 15h4" stroke="#1a130c" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <div class="meta"><span class="chip">presets</span><span class="chip">break-even</span><span class="chip">print one-pager</span></div>
+      <h2>Savings Calculator</h2>
+      <p>Renting leads vs. owning them — live. Cost per booked job, multi-year compounding, and the moment owning pays for itself.</p>
+      <span class="go">Open demo <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </a>
+
+    <a class="card" href="field-app.html">
+      <div class="ic">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="6" y="2.5" width="12" height="19" rx="3" stroke="#1a130c" stroke-width="1.8"/><path d="M10.5 5.5h3" stroke="#1a130c" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17.5" r="1.3" fill="#1a130c"/></svg>
+      </div>
+      <div class="meta"><span class="chip">9-step flow</span><span class="chip">vault</span><span class="chip">scorecard</span></div>
+      <h2>Field App</h2>
+      <p>Speak a target, score it, pull the storm swath, work the calls, recycle the vault. The whole rep workflow in your hand.</p>
+      <span class="go">Open demo <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </a>
+  </div>
+
+  <div class="foot">
+    <div class="tip">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="6" y="2.5" width="12" height="19" rx="3" stroke="var(--ember-2)" stroke-width="1.7"/><path d="M9.5 18.5h5" stroke="var(--ember-2)" stroke-width="1.7" stroke-linecap="round"/></svg>
+      <span><b>On your phone:</b> tap Share → <b>Add to Home Screen</b> to save this as an app icon. Opens full-screen, no browser bars.</span>
+    </div>
+    <div class="tip">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="4" width="19" height="13" rx="2" stroke="var(--cool)" stroke-width="1.7"/><path d="M8 20.5h8M12 17.5v3" stroke="var(--cool)" stroke-width="1.7" stroke-linecap="round"/></svg>
+      <span><b>On the ThinkPad / TV:</b> open this same link in Chrome or Edge and present full-screen with <b>F11</b>.</span>
+    </div>
+    <div class="conf">NDA inner circle · industry averages &amp; prospect inputs only — no client data</div>
+  </div>
+</div>
+</body>
+</html>

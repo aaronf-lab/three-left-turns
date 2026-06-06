@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scan to Follow Along — Fire &amp; Drive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --bg:#14100d; --panel:#1d1813; --line:#352b21;
+    --ink:#f4ece2; --muted:#a9988a; --faint:#7a6b5e;
+    --ember-1:#ffc24b; --ember-2:#ff7a1f; --ember-3:#e8381a;
+    --grad:linear-gradient(100deg,var(--ember-1),var(--ember-2) 55%,var(--ember-3));
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg); color:var(--ink); font-family:"Archivo",sans-serif;
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+    background-image:radial-gradient(110% 75% at 82% -8%, rgba(255,122,31,.18), transparent 58%),radial-gradient(85% 65% at -8% 112%, rgba(232,56,26,.13), transparent 52%);}
+  /* 16:9 stage that scales to fit any screen */
+  .stage{position:relative; width:1920px; height:1080px; transform-origin:center; flex:none}
+  .wm{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; overflow:hidden}
+  .wm img{width:1600px; opacity:.05; filter:saturate(0) brightness(1.6)}
+  .inner{position:absolute; inset:0; display:grid; grid-template-columns:1fr 620px; align-items:center;
+    padding:140px 150px; gap:90px; z-index:2}
+  .top{display:flex; align-items:center; gap:16px; margin-bottom:30px}
+  .spark{width:16px;height:16px;border-radius:50%;background:var(--grad);box-shadow:0 0 22px 4px rgba(255,122,31,.7)}
+  .kicker{letter-spacing:.22em; font-size:19px; text-transform:uppercase; color:var(--muted); font-weight:700}
+  h1{font-family:"Fraunces",serif; font-weight:900; font-size:96px; line-height:.98; letter-spacing:-.02em}
+  h1 em{font-style:italic; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .sub{color:var(--muted); font-size:30px; line-height:1.45; margin-top:30px; max-width:20ch}
+  .sub b{color:var(--ink)}
+  .steps{margin-top:46px; display:flex; flex-direction:column; gap:18px}
+  .step{display:flex; align-items:center; gap:18px; font-size:24px; color:var(--ink)}
+  .step .n{flex:none; width:42px; height:42px; border-radius:50%; background:var(--panel); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-family:"JetBrains Mono",monospace; font-weight:700; font-size:19px; color:var(--ember-1)}
+  /* QR panel */
+  .qrwrap{justify-self:center; display:flex; flex-direction:column; align-items:center; gap:30px}
+  .qrcard{background:#fff; border-radius:36px; padding:46px; box-shadow:0 40px 100px rgba(0,0,0,.5), 0 0 0 1px rgba(255,122,31,.25); position:relative}
+  .qrcard::after{content:""; position:absolute; inset:-4px; border-radius:40px; padding:4px;
+    background:var(--grad); -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude; opacity:.55}
+  #qr{width:440px; height:440px; display:flex; align-items:center; justify-content:center}
+  #qr img, #qr canvas{width:440px !important; height:440px !important; display:block}
+  .url{font-family:"JetBrains Mono",monospace; font-weight:700; font-size:26px; color:var(--ember-1); letter-spacing:.01em; text-align:center}
+  .urlsub{font-family:"JetBrains Mono",monospace; font-size:17px; color:var(--faint); text-align:center; margin-top:-18px}
+  .conf{position:absolute; left:150px; bottom:64px; font-family:"JetBrains Mono",monospace; font-size:17px; color:var(--faint); letter-spacing:.05em; z-index:2}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="wm"><img src="pcn-logo.png" alt=""></div>
+  <div class="inner">
+    <div class="left">
+      <div class="top"><span class="spark"></span><span class="kicker">Priority Commercial Nationwide</span></div>
+      <h1>Drive it<br><em>yourself.</em></h1>
+      <div class="sub">Follow the demo on your own phone while it runs on the big screen. <b>No app, no login.</b></div>
+      <div class="steps">
+        <div class="step"><span class="n">1</span> Point your camera at the code</div>
+        <div class="step"><span class="n">2</span> Tap the link that pops up</div>
+        <div class="step"><span class="n">3</span> Pick a demo and start driving</div>
+      </div>
+    </div>
+    <div class="qrwrap">
+      <div class="qrcard"><div id="qr"></div></div>
+      <div class="url">aaronf-lab.github.io<br>/three-left-turns</div>
+    </div>
+  </div>
+  <div class="conf">NDA inner circle · sanitized data only — no client information</div>
+</div>
+<script>
+  var URL_TO_ENCODE = "https://aaronf-lab.github.io/three-left-turns/";
+  function makeQR(){
+    var el = document.getElementById('qr');
+    el.innerHTML = "";
+    if (window.QRCode) {
+      new QRCode(el, { text: URL_TO_ENCODE, width:440, height:440,
+        colorDark:"#14100d", colorLight:"#ffffff", correctLevel: QRCode.CorrectLevel.H });
+    } else {
+      el.innerHTML = '<div style="font:700 22px JetBrains Mono,monospace;color:#14100d;text-align:center;padding:20px">QR failed to load —<br>type the URL below</div>';
+    }
+  }
+  if (window.QRCode) makeQR(); else window.addEventListener('load', makeQR);
+  // scale the 1920×1080 stage to fit the viewport (for full-screen presenting)
+  function fit(){
+    var s = document.getElementById('stage');
+    var k = Math.min(window.innerWidth/1920, window.innerHeight/1080);
+    s.style.transform = 'scale('+k+')';
+  }
+  fit(); window.addEventListener('resize', fit);
+</script>
+</body>
+</html>
